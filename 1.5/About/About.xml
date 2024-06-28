@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+	<packageId>BurritoJambon.BedAssignForked</packageId>
+	<name>Automatic Bed Reassigment Forked</name>
+	<description>
+    This mod automatically reassigns pawns' beds when:
+    pawns are sharing beds with (non-polyamorous) non-partners
+    pawns are separated from their partners (or the partner they love the most if polyamorous)
+    pawns are suffering a mood penalty from a bedroom-specific trait (jealous, greedy, ascetic)
+    there are empty beds with better stats for the pawn (room impressiveness, rest effectiveness, comfort)
+    NOTE: These conditions can be toggled within mod options.
+  </description>
+	<author>Original: pointfeev, forked by: Burrito Jambon</author>
+	<supportedVersions>
+		<li>1.5</li>
+	</supportedVersions>
+	<modVersion>1.0</modVersion>
+	<modDependencies>
+	<li>
+		<packageId>brrainz.harmony</packageId>
+		<displayName>Harmony</displayName>
+		<steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+	</li>
+	</modDependencies>
+</ModMetaData>

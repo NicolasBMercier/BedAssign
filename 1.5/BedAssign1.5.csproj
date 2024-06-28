@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <OutputType>Library</OutputType>
+    <RootNamespace>BedAssign</RootNamespace>
+    <AssemblyName>BedAssignForked</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>C:\RIMWORLD_Debug\Mods\BedAssignForked\Assemblies</OutputPath>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugType>portable</DebugType>
+    <OutputPath>C:\RIMWORLD_Debug\Mods\BedAssignForked\Assemblies</OutputPath>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  
+  <!-- This property group ensures all DLLs are copied to the Assemblies folder -->
+  <PropertyGroup>
+    <AboutFolder>$(OutputPath)\..\About</AboutFolder>
+  </PropertyGroup>
+
+  <Target Name="MoveDlls" AfterTargets="Build">
+    <ItemGroup>
+      <DllFiles Include="$(OutputPath)\About\*.xml" />
+      <PdbFiles Include="$(OutputPath)\About\*.png" />
+      <!-- Include all DLLs and PDBs in the output directory -->
+    </ItemGroup>
+    <MakeDir Directories="$(AboutFolder)" />
+    <Move SourceFiles="@(DllFiles)" DestinationFolder="$(AboutFolder)" />
+    <Move SourceFiles="@(PdbFiles)" DestinationFolder="$(AboutFolder)" />
+    <RemoveDir Directories="$(OutputPath)\About" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Krafs.Rimworld.Ref">
+      <Version>1.5.4104</Version>
+    </PackageReference>
+    <PackageReference Include="Lib.Harmony">
+      <Version>2.3.3</Version>
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="RimWorld.CompatUtils" Version="1.2.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="About\About.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="About\Preview.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

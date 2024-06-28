@@ -48,6 +48,7 @@ public static class BedAssign
     {
         if (!pawn.CanBeUsed())
             return;
+
         Building_Bed currentBed = pawn.ownership.OwnedBed;
         Map map = pawn.MapHeld;
 
@@ -100,6 +101,7 @@ public static class BedAssign
                         }, JealousPenaltyExcludedOwnerTraitDefs))
                     return;
             }
+
         if (ModSettings.AvoidGreedyPenalty) // Attempt to avoid the Greedy mood penalty
             if (thoughts.SufferingFromThought("Greedy", out Thought greedyThought, out float currentBaseMoodEffect))
             {
@@ -111,10 +113,14 @@ public static class BedAssign
                         {
                             int stage = RoomStatDefOf.Impressiveness.GetScoreStageIndex(GetBedRoomImpressiveness(bed)) + 1;
                             float? bedBaseMoodEffect = greedyThought.def?.stages?[stage]?.baseMoodEffect;
-                            return bedBaseMoodEffect > currentBaseMoodEffect;
+                            if(bedBaseMoodEffect.HasValue is false)
+                                bedBaseMoodEffect = 0;
+
+                            return bedBaseMoodEffect.Value > currentBaseMoodEffect;
                         }, GreedyPenaltyExcludedOwnerTraitDefs))
                     return;
             }
+
         if (ModSettings.AvoidAsceticPenalty) // Attempt to avoid the Ascetic mood penalty
             if (thoughts.SufferingFromThought("Ascetic", out Thought asceticThought, out float currentBaseMoodEffect)
              && (pawnLover is null || thoughtsLover.Find(t => t.def?.defName == "Ascetic") is not null)) // lover should also have Ascetic
@@ -127,10 +133,15 @@ public static class BedAssign
                         {
                             int stage = RoomStatDefOf.Impressiveness.GetScoreStageIndex(GetBedRoomImpressiveness(bed)) + 1;
                             float? bedBaseMoodEffect = asceticThought.def?.stages?[stage]?.baseMoodEffect;
-                            return bedBaseMoodEffect > currentBaseMoodEffect;
+
+                            if (bedBaseMoodEffect.HasValue is false)
+                                bedBaseMoodEffect = 0;
+
+                            return bedBaseMoodEffect.Value > currentBaseMoodEffect;
                         }, AsceticPenaltyExcludedOwnerTraitDefs))
                     return;
             }
+
         if (ModSettings.ClaimBetterBeds) // Attempt to claim a better empty bed
             if (!(pawnLover is null && pawnLoverNonMutual is not null
                                     && pawnLoverNonMutual.ownership?.OwnedBed?.CompAssignableToPawn.MaxAssignedPawnsCount
@@ -142,6 +153,7 @@ public static class BedAssign
                         excludedOwnerTraitDefs: BetterBedExcludedOwnerTraitDefs))
                     return;
             }
+
         if (ModSettings.AvoidPartnerPenalty) // Attempt to avoid the "Want to sleep with partner" mood penalty
             if (thoughts.SufferingFromThought("WantToSleepWithSpouseOrLover", out _, out _) && (pawnLover is not null || pawnLoverNonMutual is not null))
             {
@@ -227,8 +239,10 @@ public static class BedAssign
                     }
                 }
             }
+
         if (!ModSettings.AvoidSharingPenalty) // Attempt to avoid the "Sharing bed" mood penalty (if it's not due to polyamory)
             return;
+
         if (thoughts.SufferingFromThought("SharedBed", out _, out _)
          && !((pawnLover?.ownership is null || pawnLover.ownership.OwnedBed != currentBed)
            && (pawnLoverNonMutual?.ownership is null || pawnLoverNonMutual.ownership.OwnedBed != currentBed)) && pawn.TryUnClaimBed())
